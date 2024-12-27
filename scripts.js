@@ -1,21 +1,15 @@
 // Ensure DOM elements are loaded before accessing them
 document.addEventListener("DOMContentLoaded", () => {
     // Get DOM elements
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
     const logoutButton = document.getElementById('logout-btn');
-    const changeUsernameForm = document.getElementById('change-username-form');
-    const currentUsernameDisplay = document.getElementById('current-username');
-    const errorMessage = document.getElementById('error-message');
-    const successMessage = document.getElementById('success-message');
-
-    // Guard against missing elements
-    if (!logoutButton || !changeUsernameForm || !currentUsernameDisplay) {
-        console.error("One or more required elements are missing from the DOM.");
-        return;
-    }
+    const authSection = document.getElementById('auth-section'); // Section containing login/signup forms
+    const loggedInSection = document.getElementById('logged-in-section'); // Section displayed when logged in
 
     // Firebase authentication setup
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
@@ -29,49 +23,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Handle user sign-out
-    logoutButton.addEventListener('click', () => {
-        signOut(auth).then(() => {
-            window.location.href = 'index.html'; // Redirect to the landing page
-        }).catch((error) => {
-            console.log("Error signing out:", error);
-        });
-    });
-
     // Listen for changes in authentication state
     onAuthStateChanged(auth, user => {
         if (user) {
-            // Display the current username
-            currentUsernameDisplay.textContent = user.displayName || "No username set";
-            
-            // Show the username change form
-            changeUsernameForm.style.display = 'block';
+            // User is logged in, hide auth section and show logged-in section
+            if (authSection) authSection.style.display = 'none';
+            if (loggedInSection) loggedInSection.style.display = 'block';
 
-            // Handle form submission for username change
-            changeUsernameForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const newUsername = document.getElementById('new-username').value.trim();
-
-                if (newUsername) {
-                    // Update the user's display name (username)
-                    updateProfile(user, {
-                        displayName: newUsername
-                    }).then(() => {
-                        // Success: Update the displayed username and show success message
-                        currentUsernameDisplay.textContent = newUsername;
-                        successMessage.style.display = 'block';
-                        errorMessage.style.display = 'none';
+            // Add logout button functionality
+            if (logoutButton) {
+                logoutButton.addEventListener('click', () => {
+                    signOut(auth).then(() => {
+                        // Redirect to the landing page
+                        window.location.reload();
                     }).catch((error) => {
-                        // Error handling
-                        errorMessage.textContent = "Error updating username: " + error.message;
-                        errorMessage.style.display = 'block';
-                        successMessage.style.display = 'none';
+                        console.log("Error signing out:", error);
                     });
-                }
-            });
+                });
+            }
         } else {
-            // Redirect to the login page if no user is logged in
-            window.location.href = 'index.html';
+            // No user is logged in, show auth section and hide logged-in section
+            if (authSection) authSection.style.display = 'block';
+            if (loggedInSection) loggedInSection.style.display = 'none';
         }
     });
 });
