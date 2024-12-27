@@ -22,10 +22,10 @@
         <nav>
             <ul>
                 <li><a href="#features">Features</a></li>
-                <li><a href="#signup" id="signup-link">Sign Up</a></li>
-                <li><a href="#login" id="login-link">Login</a></li>
+                <li><a href="index.html" id="signup-link">Sign Up</a></li>
+                <li><a href="index.html" id="login-link">Login</a></li>
                 <li><a href="https://discord.gg/G6S2vmnjvt" target="_blank">Join Our Discord</a></li>
-                <li><a href="#" id="logout-btn" style="color:red;">Logout</a></li>
+                <li><a href="#" id="logout-btn" style="display:none; color:red;">Logout</a></li>
             </ul>
         </nav>
     </header>
@@ -64,6 +64,8 @@
         const logoutBtn = document.getElementById('logout-btn');
         const usernameDisplay = document.getElementById('username');
         const emailDisplay = document.getElementById('email');
+        const signupLink = document.getElementById('signup-link');
+        const loginLink = document.getElementById('login-link');
 
         // Listen to auth state changes
         onAuthStateChanged(auth, user => {
@@ -75,6 +77,10 @@
                 // Set up logout button
                 logoutBtn.style.display = 'inline-block';
 
+                // Hide signup and login links
+                signupLink.style.display = 'none';
+                loginLink.style.display = 'none';
+
                 logoutBtn.addEventListener('click', () => {
                     signOut(auth).then(() => {
                         // Redirect to homepage or login page
@@ -84,8 +90,10 @@
                     });
                 });
             } else {
-                // If no user is signed in, redirect to login page
-                window.location.href = "login.html"; // Redirect to login if not logged in
+                // If no user is signed in, show the signup and login links and hide the logout button
+                signupLink.style.display = 'inline-block';
+                loginLink.style.display = 'inline-block';
+                logoutBtn.style.display = 'none';
             }
         });
     </script>
