@@ -8,6 +8,7 @@
     <!-- Firebase SDKs (with type="module") -->
     <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 
     <!-- Google Sign-In SDK -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
@@ -36,6 +37,15 @@
             <p><strong>Username:</strong> <span id="username"></span></p>
             <p><strong>Email:</strong> <span id="email"></span></p>
         </div>
+
+        <!-- My Feed Section -->
+        <section id="my-feed">
+            <h3>My Feed</h3>
+            <div id="feed-posts">
+                <!-- User's posts will be displayed here -->
+            </div>
+        </section>
+
         <button id="logout-btn">Logout</button>
     </section>
 
@@ -48,6 +58,7 @@
         // Firebase SDK setup
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+        import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
@@ -60,15 +71,17 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
         const logoutBtn = document.getElementById('logout-btn');
         const usernameDisplay = document.getElementById('username');
         const emailDisplay = document.getElementById('email');
         const signupLink = document.getElementById('signup-link');
         const loginLink = document.getElementById('login-link');
+        const feedContainer = document.getElementById('feed-posts');
 
         // Listen to auth state changes
-        onAuthStateChanged(auth, user => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 // Display user data in profile
                 usernameDisplay.textContent = user.displayName || 'No name set';
@@ -89,6 +102,27 @@
                         console.error("Error signing out: ", error);
                     });
                 });
+
+                // Fetch the user's feed (posts from Firebase Firestore)
+                const postsRef = collection(db, 'posts'); // Assuming posts are stored in Firestore in a 'posts' collection
+                const q = query(postsRef, where('uid', '==', user.uid)); // Filter posts by user ID
+
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    feedContainer.innerHTML = '<p>No posts yet. Start sharing!</p>';
+                } else {
+                    querySnapshot.forEach((doc) => {
+                        const post = doc.data();
+                        const postElement = document.createElement('div');
+                        postElement.classList.add('feed-post');
+                        postElement.innerHTML = `
+                            <p><strong>${post.username}</strong></p>
+                            <p>${post.content}</p>
+                            <p><small>Posted on ${post.timestamp.toDate().toLocaleString()}</small></p>
+                        `;
+                        feedContainer.appendChild(postElement);
+                    });
+                }
             } else {
                 // If no user is signed in, show the signup and login links and hide the logout button
                 signupLink.style.display = 'inline-block';
