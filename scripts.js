@@ -16,25 +16,57 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Example function to sign in user
+// Sign Up function
+async function signUp(username, email, password) {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        console.log('User signed up:', userCredential.user);
+        
+        // Optionally, handle the username and store it in Firebase if needed
+        alert("Sign up successful!");
+        // Redirect or do something after successful sign up
+    } catch (error) {
+        console.error('Error signing up:', error);
+        alert("Sign up failed: " + error.message);
+    }
+}
+
+// Sign In function
 async function signIn(email, password) {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         console.log('User signed in:', userCredential.user);
-
-        // Redirect to the profile page upon successful login
-        window.location.href = 'profile.html';  // Change this to the actual URL of the profile page
+        
+        // Redirect to profile page after login
+        window.location.href = 'profile.html';  // Change this to your actual profile page URL
     } catch (error) {
         console.error('Error signing in:', error);
         alert("Login failed: " + error.message);
     }
 }
 
-// Handling the form submission
-document.getElementById('login-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    
-    signIn(email, password); // Call the signIn function
+// Wait for the DOM to fully load before attaching event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle Sign Up form submission
+    const signUpForm = document.getElementById('signup-form');
+    if (signUpForm) {
+        signUpForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            signUp(username, email, password); // Call sign up function
+        });
+    }
+
+    // Handle Login form submission
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            signIn(email, password); // Call sign in function
+        });
+    }
 });
