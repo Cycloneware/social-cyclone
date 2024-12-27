@@ -9,6 +9,9 @@
     <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 
+    <!-- Google Sign-In SDK -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,34 +21,74 @@
         </div>
         <nav>
             <ul>
-                <li><a href="#profile">My Profile</a></li>
                 <li><a href="#features">Features</a></li>
-                <li><a href="#" id="logout-btn">Logout</a></li>
+                <li><a href="#signup" id="signup-link">Sign Up</a></li>
+                <li><a href="#login" id="login-link">Login</a></li>
+                <li><a href="https://discord.gg/G6S2vmnjvt" target="_blank">Join Our Discord</a></li>
+                <li><a href="#" id="logout-btn" style="color:red;">Logout</a></li>
             </ul>
         </nav>
     </header>
 
-    <main>
-        <section id="profile" class="profile">
-            <h2>Your Profile</h2>
-            <p><strong>Current Username:</strong> <span id="current-username">Loading...</span></p>
-            <form id="change-username-form">
-                <div class="form-group">
-                    <label for="new-username">New Username</label>
-                    <input type="text" id="new-username" name="new-username" required>
-                </div>
-                <button type="submit" class="cta-btn">Change Username</button>
-            </form>
-            <p id="error-message" style="color: red; display: none;"></p>
-            <p id="success-message" style="color: green; display: none;">Username updated successfully!</p>
-        </section>
-    </main>
+    <section class="profile">
+        <h2>Your Profile</h2>
+        <div id="user-info">
+            <p><strong>Username:</strong> <span id="username"></span></p>
+            <p><strong>Email:</strong> <span id="email"></span></p>
+        </div>
+        <button id="logout-btn">Logout</button>
+    </section>
 
     <footer>
         <p>&copy; 2024 Social Cyclone. All rights reserved.</p>
     </footer>
 
     <!-- Firebase Initialization and Authentication -->
-    <script type="module" src="scripts.js"></script>
+    <script type="module">
+        // Firebase SDK setup
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
+            authDomain: "social-cyclone.firebaseapp.com",
+            projectId: "social-cyclone",
+            storageBucket: "social-cyclone.appspot.com",
+            messagingSenderId: "537484262670",
+            appId: "1:537484262670:web:238408f9740b7576542b5f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const logoutBtn = document.getElementById('logout-btn');
+        const usernameDisplay = document.getElementById('username');
+        const emailDisplay = document.getElementById('email');
+
+        // Listen to auth state changes
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                // Display user data in profile
+                usernameDisplay.textContent = user.displayName || 'No name set';
+                emailDisplay.textContent = user.email;
+
+                // Set up logout button
+                logoutBtn.style.display = 'inline-block';
+
+                logoutBtn.addEventListener('click', () => {
+                    signOut(auth).then(() => {
+                        // Redirect to homepage or login page
+                        window.location.href = "index.html"; // You can change this to your desired page
+                    }).catch((error) => {
+                        console.error("Error signing out: ", error);
+                    });
+                });
+            } else {
+                // If no user is signed in, redirect to login page
+                window.location.href = "login.html"; // Redirect to login if not logged in
+            }
+        });
+    </script>
+
 </body>
 </html>
