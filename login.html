@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Social Cyclone</title>
 
-    <!-- Firebase SDKs (with type="module") -->
+    <!-- Firebase SDKs -->
     <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 
@@ -32,7 +32,7 @@
     <main>
         <section class="auth-form">
             <h2>Login to Your Account</h2>
-            <form action="#" method="POST">
+            <form id="login-form" method="POST">
                 <div class="form-group">
                     <label for="login-email">Email</label>
                     <input type="email" id="login-email" name="email" required>
@@ -57,6 +57,38 @@
     <script type="module" src="scripts.js"></script>
 
     <script>
+        // Firebase Configuration (provided)
+        const firebaseConfig = {
+            apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
+            authDomain: "social-cyclone.firebaseapp.com",
+            projectId: "social-cyclone",
+            storageBucket: "social-cyclone.firebasestorage.app",
+            messagingSenderId: "537484262670",
+            appId: "1:537484262670:web:238408f9740b7576542b5f"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Handle the login form submission
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                // Sign the user in with Firebase Authentication
+                await auth.signInWithEmailAndPassword(email, password);
+                // Redirect to the profile page after successful login
+                window.location.href = 'profile.html';
+            } catch (error) {
+                alert(error.message); // Handle errors
+            }
+        });
+
         // Google Sign-In button setup
         function renderGoogleSignInButton() {
             gapi.signin2.render('google-signin-button', {
@@ -79,7 +111,16 @@
             console.log("User Name: " + profile.getName());
             console.log("User Email: " + profile.getEmail());
 
-            // You can send the id_token to your server for authentication
+            // Sign in to Firebase with Google credentials
+            const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
+            firebase.auth().signInWithCredential(credential)
+                .then(() => {
+                    // Redirect to the profile page after successful Google login
+                    window.location.href = 'profile.html';
+                })
+                .catch((error) => {
+                    alert(error.message); // Handle errors
+                });
         }
 
         // Function that is called when Google login fails
