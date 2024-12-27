@@ -22,10 +22,10 @@
         <nav>
             <ul>
                 <li><a href="#features">Features</a></li>
-                <li><a href="#signup" id="signup-link" class="hidden">Sign Up</a></li>
-                <li><a href="#login" id="login-link" class="hidden">Login</a></li>
+                <li><a href="#signup" id="signup-link">Sign Up</a></li>
+                <li><a href="#login" id="login-link">Login</a></li>
                 <li><a href="https://discord.gg/G6S2vmnjvt" target="_blank">Join Our Discord</a></li>
-                <li><a href="#" id="logout-btn" class="hidden" style="color:red;">Logout</a></li>
+                <li><a href="#" id="logout-btn" style="display:none; color:red;">Logout</a></li>
             </ul>
         </nav>
     </header>
@@ -54,7 +54,7 @@
         <!-- Sign-Up Section -->
         <section id="signup" class="auth-form" style="display: none;">
             <h2>Create an Account</h2>
-            <form id="signup-form">
+            <form action="#" method="POST">
                 <div class="form-group">
                     <label for="signup-username">Username</label>
                     <input type="text" id="signup-username" name="username" required>
@@ -74,7 +74,7 @@
         <!-- Login Section -->
         <section id="login" class="auth-form" style="display: none;">
             <h2>Login to Your Account</h2>
-            <form id="login-form">
+            <form action="#" method="POST">
                 <div class="form-group">
                     <label for="login-email">Email</label>
                     <input type="email" id="login-email" name="email" required>
@@ -85,6 +85,9 @@
                 </div>
                 <button type="submit" class="cta-btn">Login</button>
             </form>
+
+            <!-- Google Sign-In Button -->
+            <div id="google-signin-button"></div>
         </section>
 
         <section id="about" class="about">
@@ -105,81 +108,46 @@
     </footer>
 
     <!-- Firebase Initialization and Authentication -->
-    <script type="module">
-        // Firebase SDK setup
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+    <script type="module" src="scripts.js"></script>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
-            authDomain: "social-cyclone.firebaseapp.com",
-            projectId: "social-cyclone",
-            storageBucket: "social-cyclone.appspot.com",
-            messagingSenderId: "537484262670",
-            appId: "1:537484262670:web:238408f9740b7576542b5f"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Elements to show/hide based on auth state
-        const signupLink = document.getElementById('signup-link');
-        const loginLink = document.getElementById('login-link');
-        const logoutBtn = document.getElementById('logout-btn');
-        const signupForm = document.getElementById('signup');
-        const loginForm = document.getElementById('login');
-        const loginFormElement = document.getElementById('login-form');
-
-        // Listen to auth state changes
-        onAuthStateChanged(auth, user => {
-            if (user) {
-                // Show logout and hide signup/login links
-                signupLink.style.display = 'none';
-                loginLink.style.display = 'none';
-                logoutBtn.style.display = 'inline-block';
-                signupForm.style.display = 'none';
-                loginForm.style.display = 'none';
-            } else {
-                // Show signup/login links and hide logout button
-                signupLink.style.display = 'inline-block';
-                loginLink.style.display = 'inline-block';
-                logoutBtn.style.display = 'none';
-                signupForm.style.display = 'block';
-                loginForm.style.display = 'block';
-            }
-        });
-
-        // Handle login
-        loginFormElement.addEventListener('submit', (event) => {
-            event.preventDefault();
-
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // Successfully signed in
-                    console.log("User logged in: ", userCredential.user);
-                    // Reload the page or update UI based on login
-                    window.location.reload();
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.error(errorCode, errorMessage);
-                    alert("Login failed: " + errorMessage);
-                });
-        });
-
-        // Handle logout
-        logoutBtn.addEventListener('click', () => {
-            signOut(auth).then(() => {
-                // After logging out, reload the page or redirect
-                window.location.reload();
-            }).catch((error) => {
-                console.log("Error signing out: ", error);
+    <script>
+        // Google Sign-In button setup
+        function renderGoogleSignInButton() {
+            gapi.signin2.render('google-signin-button', {
+                'scope': 'profile email',
+                'width': 250,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onGoogleSignIn,
+                'onfailure': onGoogleSignInFailure
             });
-        });
+        }
+
+        // Function that is called when Google login is successful
+        function onGoogleSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            var id_token = googleUser.getAuthResponse().id_token;
+
+            console.log("ID Token: " + id_token);
+            console.log("User Name: " + profile.getName());
+            console.log("User Email: " + profile.getEmail());
+
+            // You can send the id_token to your server for authentication
+        }
+
+        // Function that is called when Google login fails
+        function onGoogleSignInFailure(error) {
+            console.error("Google Sign-In failed: ", error);
+        }
+
+        // Load the Google Sign-In library when the page is loaded
+        window.onload = function () {
+            gapi.load('auth2', function() {
+                gapi.auth2.init();
+                renderGoogleSignInButton();
+            });
+        };
     </script>
 </body>
 </html>
