@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Social Cyclone</title>
 
-    <!-- Firebase App and Auth SDKs -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 
     <!-- Google Sign-In SDK -->
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -45,7 +45,19 @@
             </form>
 
             <!-- Google Sign-In Button -->
-            <div id="google-signin-button"></div>
+            <div id="g_id_onload"
+                 data-client_id="537484262670-o0tselo2usmpmrkro8au4hb7n487u2pc.apps.googleusercontent.com"
+                 data-callback="handleGoogleSignIn"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-shape="rectangular"
+                 data-theme="outline"
+                 data-text="continue_with"
+                 data-size="large"
+                 data-logo_alignment="center">
+            </div>
         </section>
     </main>
 
@@ -68,65 +80,33 @@
         const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Handle form submission for login
+        // Handle email/password login
         document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent the default form submit action
+            e.preventDefault(); // Prevent form submission
 
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
             try {
-                // Firebase login with email and password
                 await auth.signInWithEmailAndPassword(email, password);
-                window.location.href = 'profile.html'; // Redirect to profile after successful login
+                window.location.href = 'profile.html'; // Redirect to profile on success
             } catch (error) {
-                alert("Login failed: " + error.message); // Handle error
+                alert("Login failed: " + error.message);
             }
         });
 
-        // Google Sign-In setup
-        function renderGoogleSignInButton() {
-            gapi.signin2.render('google-signin-button', {
-                'scope': 'profile email',
-                'width': 250,
-                'height': 50,
-                'longtitle': true,
-                'theme': 'dark',
-                'onsuccess': onGoogleSignIn,
-                'onfailure': onGoogleSignInFailure
-            });
-        }
+        // Handle Google Sign-In
+        function handleGoogleSignIn(response) {
+            const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
 
-        // Function that is called when Google login is successful
-        function onGoogleSignIn(googleUser) {
-            const id_token = googleUser.getAuthResponse().id_token;
-
-            // Firebase login with Google credentials
-            const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
             auth.signInWithCredential(credential)
                 .then(() => {
-                    // Redirect to the profile page after successful Google login
-                    window.location.href = 'profile.html';
+                    window.location.href = 'profile.html'; // Redirect to profile on success
                 })
                 .catch((error) => {
-                    alert("Google Sign-In failed: " + error.message); // Handle errors
+                    alert("Google Sign-In failed: " + error.message);
                 });
         }
-
-        // Function that is called when Google login fails
-        function onGoogleSignInFailure(error) {
-            console.error("Google Sign-In failed: ", error);
-        }
-
-        // Load the Google Sign-In button on page load
-        window.onload = function () {
-            gapi.load('auth2', function() {
-                gapi.auth2.init({
-                    client_id: '537484262670-o0tselo2usmpmrkro8au4hb7n487u2pc.apps.googleusercontent.com'
-                });
-                renderGoogleSignInButton();
-            });
-        };
     </script>
 </body>
 </html>
