@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Social Cyclone</title>
+
+    <!-- Firebase SDKs (with type="module") -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+
+    <!-- Google Sign-In SDK -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Social Cyclone</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="signup.html">Sign Up</a></li>
+                <li><a href="login.html" class="active">Login</a></li>
+                <li><a href="https://discord.gg/G6S2vmnjvt" target="_blank">Join Our Discord</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="auth-form">
+            <h2>Login to Your Account</h2>
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" required>
+                </div>
+                <button type="submit" class="cta-btn">Login</button>
+            </form>
+
+            <!-- Google Sign-In Button -->
+            <div id="google-signin-button"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Social Cyclone. All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase Initialization and Authentication -->
+    <script type="module" src="scripts.js"></script>
+
+    <script>
+        // Google Sign-In button setup
+        function renderGoogleSignInButton() {
+            gapi.signin2.render('google-signin-button', {
+                'scope': 'profile email',
+                'width': 250,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onGoogleSignIn,
+                'onfailure': onGoogleSignInFailure
+            });
+        }
+
+        // Function that is called when Google login is successful
+        function onGoogleSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            var id_token = googleUser.getAuthResponse().id_token;
+
+            console.log("ID Token: " + id_token);
+            console.log("User Name: " + profile.getName());
+            console.log("User Email: " + profile.getEmail());
+
+            // You can send the id_token to your server for authentication
+        }
+
+        // Function that is called when Google login fails
+        function onGoogleSignInFailure(error) {
+            console.error("Google Sign-In failed: ", error);
+        }
+
+        // Load the Google Sign-In library when the page is loaded
+        window.onload = function () {
+            gapi.load('auth2', function() {
+                gapi.auth2.init();
+                renderGoogleSignInButton();
+            });
+        };
+    </script>
+</body>
+</html>
