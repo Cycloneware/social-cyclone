@@ -1,0 +1,205 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    height: 100%;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Header */
+header {
+    background-color: #1e2a3a;
+    color: #fff;
+    padding: 10px 20px;
+}
+
+header .logo h1 {
+    font-size: 2.5em;
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+nav ul li a:hover {
+    color: #00bcd4;
+}
+
+/* Hero Section */
+.hero {
+    background: url('https://via.placeholder.com/1600x800/2c3e50/ffffff?text=Social+Cyclone') no-repeat center center/cover;
+    color: #fff;
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.hero h2 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+}
+
+.cta-btn {
+    background-color: #00bcd4;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.cta-btn:hover {
+    background-color: #0097a7;
+}
+
+/* Features Section */
+.features {
+    background-color: #fff;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.features h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.features ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.features ul li {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.features ul li strong {
+    color: #00bcd4;
+}
+
+/* About Section */
+.about {
+    background-color: #f9f9f9;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.about h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.about p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.about strong {
+    color: #00bcd4;
+}
+
+/* Contact Section */
+.contact {
+    background-color: #fff;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.contact h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.contact p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.contact a {
+    color: #00bcd4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact a:hover {
+    color: #0097a7;
+}
+
+/* Footer */
+footer {
+    background-color: #1e2a3a;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+footer p {
+    font-size: 1em;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    header .logo h1 {
+        font-size: 2em;
+    }
+
+    .hero h2 {
+        font-size: 2.5em;
+    }
+
+    .hero p {
+        font-size: 1.2em;
+    }
+
+    .cta-btn {
+        font-size: 1em;
+        padding: 8px 16px;
+    }
+
+    .features h2,
+    .about h2,
+    .contact h2 {
+        font-size: 2em;
+    }
+
+    .features ul li,
+    .about p,
+    .contact p {
+        font-size: 1em;
+    }
+}
