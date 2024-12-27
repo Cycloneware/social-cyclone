@@ -29,8 +29,13 @@ export function googleSignIn() {
             window.location.href = "profile.html";
         })
         .catch((error) => {
-            console.error("Error during Google Sign-In:", error.message);
-            alert("Google Sign-In failed: " + error.message);
+            if (error.code === "auth/popup-closed-by-user") {
+                console.warn("Sign-In popup was closed by the user.");
+                alert("Sign-In canceled. Please try again.");
+            } else {
+                console.error("Error during Google Sign-In:", error.message);
+                alert("Google Sign-In failed: " + error.message);
+            }
         });
 }
 
