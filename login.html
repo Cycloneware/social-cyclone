@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Social Cyclone</title>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase App (core) SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 
     <!-- Google Sign-In SDK -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -45,19 +45,7 @@
             </form>
 
             <!-- Google Sign-In Button -->
-            <div id="g_id_onload"
-                 data-client_id="537484262670-o0tselo2usmpmrkro8au4hb7n487u2pc.apps.googleusercontent.com"
-                 data-callback="handleGoogleSignIn"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin"
-                 data-type="standard"
-                 data-shape="rectangular"
-                 data-theme="outline"
-                 data-text="continue_with"
-                 data-size="large"
-                 data-logo_alignment="center">
-            </div>
+            <div id="google-signin-button"></div>
         </section>
     </main>
 
@@ -71,7 +59,7 @@
             apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
             authDomain: "social-cyclone.firebaseapp.com",
             projectId: "social-cyclone",
-            storageBucket: "social-cyclone.appspot.com",
+            storageBucket: "social-cyclone.firebaseapp.com",
             messagingSenderId: "537484262670",
             appId: "1:537484262670:web:238408f9740b7576542b5f"
         };
@@ -80,33 +68,55 @@
         const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Handle email/password login
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent form submission
+        // Email/Password Login
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
 
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                window.location.href = 'profile.html'; // Redirect to profile on success
-            } catch (error) {
-                alert("Login failed: " + error.message);
-            }
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    window.location.href = 'profile.html'; // Redirect on success
+                })
+                .catch((error) => {
+                    alert("Login failed: " + error.message); // Handle error
+                });
         });
 
-        // Handle Google Sign-In
-        function handleGoogleSignIn(response) {
-            const credential = firebase.auth.GoogleAuthProvider.credential(response.credential);
+        // Google Sign-In Setup
+        function renderGoogleSignInButton() {
+            gapi.signin2.render('google-signin-button', {
+                'scope': 'profile email',
+                'width': 250,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onGoogleSignIn,
+                'onfailure': onGoogleSignInFailure
+            });
+        }
+
+        function onGoogleSignIn(googleUser) {
+            const idToken = googleUser.getAuthResponse().id_token;
+            const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
 
             auth.signInWithCredential(credential)
                 .then(() => {
-                    window.location.href = 'profile.html'; // Redirect to profile on success
+                    window.location.href = 'profile.html'; // Redirect on success
                 })
                 .catch((error) => {
                     alert("Google Sign-In failed: " + error.message);
                 });
         }
+
+        function onGoogleSignInFailure(error) {
+            console.error("Google Sign-In failed:", error);
+        }
+
+        window.onload = () => {
+            renderGoogleSignInButton();
+        };
     </script>
 </body>
 </html>
