@@ -1,8 +1,7 @@
-// Firebase initialization and authentication
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+// Initialize Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-// Firebase config (ensure it’s correct)
 const firebaseConfig = {
     apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
     authDomain: "social-cyclone.firebaseapp.com",
@@ -16,54 +15,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Sign-Up function
-async function signUp(username, email, password) {
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log('User signed up:', userCredential.user);
-        alert("Sign up successful!");
-        // Optionally, handle the username and store it in Firebase if needed
-    } catch (error) {
-        console.error('Error signing up:', error);
-        alert("Sign up failed: " + error.message);
-    }
-}
+// Get DOM elements
+const signupLink = document.getElementById('signup-link');
+const loginLink = document.getElementById('login-link');
+const logoutButton = document.getElementById('logout-btn');
+const signupForm = document.getElementById('signup');
+const loginForm = document.getElementById('login');
 
-// Sign-In function
-async function signIn(email, password) {
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log('User signed in:', userCredential.user);
-        // Redirect to profile page after login
-        window.location.href = 'profile.html';  // Make sure this matches your actual profile page
-    } catch (error) {
-        console.error('Error signing in:', error);
-        alert("Login failed: " + error.message);
-    }
-}
+// Handle user sign-out
+logoutButton.addEventListener('click', () => {
+    signOut(auth).then(() => {
+        console.log("User signed out");
+        window.location.reload();
+    }).catch((error) => {
+        console.log("Error signing out:", error);
+    });
+});
 
-// Wait for the DOM to fully load before attaching event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    // Handle Sign-Up form submission
-    const signUpForm = document.getElementById('signup-form');
-    if (signUpForm) {
-        signUpForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            const username = document.getElementById('signup-username').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            signUp(username, email, password); // Call sign-up function
-        });
-    }
-
-    // Handle Login form submission
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            signIn(email, password); // Call sign-in function
-        });
+// Listen for changes in authentication state
+onAuthStateChanged(auth, user => {
+    if (user) {
+        // User is signed in
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'none';
+        loginLink.style.display = 'none';
+        signupLink.style.display = 'none';
+        logoutButton.style.display = 'inline';
+    } else {
+        // No user is signed in
+        signupForm.style.display = 'block';
+        loginForm.style.display = 'block';
+        loginLink.style.display = 'inline';
+        signupLink.style.display = 'inline';
+        logoutButton.style.display = 'none';
     }
 });
