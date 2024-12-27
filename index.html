@@ -22,10 +22,9 @@
         <nav>
             <ul>
                 <li><a href="#features">Features</a></li>
-                <li><a href="#signup" id="signup-link">Sign Up</a></li>
-                <li><a href="#login" id="login-link">Login</a></li>
+                <li><a href="signup.html" id="signup-link">Sign Up</a></li>
+                <li><a href="login.html" id="login-link">Login</a></li>
                 <li><a href="https://discord.gg/G6S2vmnjvt" target="_blank">Join Our Discord</a></li>
-                <li><a href="#" id="logout-btn" style="display:none; color:red;">Logout</a></li>
             </ul>
         </nav>
     </header>
@@ -42,64 +41,6 @@
         <section id="features" class="features">
             <h2>Features</h2>
             <p>Social Cyclone will offer a variety of exciting features that let you connect with friends, share content, and discover new communities!</p>
-            <ul>
-                <li><strong>User Profiles:</strong> Create your own personal profile, connect with others, and share your updates.</li>
-                <li><strong>Friend Requests:</strong> Send and accept friend requests to expand your social network.</li>
-                <li><strong>Posts & Updates:</strong> Share posts, images, and updates with your friends and followers.</li>
-                <li><strong>Groups & Communities:</strong> Join groups based on your interests or start your own.</li>
-                <li><strong>Messaging:</strong> Direct message friends and start conversations.</li>
-            </ul>
-        </section>
-
-        <!-- Sign-Up Section -->
-        <section id="signup" class="auth-form" style="display: none;">
-            <h2>Create an Account</h2>
-            <form action="#" method="POST">
-                <div class="form-group">
-                    <label for="signup-username">Username</label>
-                    <input type="text" id="signup-username" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" name="password" required>
-                </div>
-                <button type="submit" class="cta-btn">Sign Up</button>
-            </form>
-        </section>
-
-        <!-- Login Section -->
-        <section id="login" class="auth-form" style="display: none;">
-            <h2>Login to Your Account</h2>
-            <form action="#" method="POST">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" name="password" required>
-                </div>
-                <button type="submit" class="cta-btn">Login</button>
-            </form>
-
-            <!-- Google Sign-In Button -->
-            <div id="google-signin-button"></div>
-        </section>
-
-        <section id="about" class="about">
-            <h2>About Social Cyclone</h2>
-            <p>Social Cyclone is the future of social networking. We aim to create a platform where users can engage in meaningful connections and share their passions with the world. Currently under construction, we are integrating cutting-edge technologies like <strong>Firebase</strong> and <strong>Google Cloud</strong> to ensure a secure, scalable experience for our users.</p>
-            <p>Our goal is to build a community where users feel safe, valued, and engaged. Stay tuned for more updates as we continue development!</p>
-        </section>
-
-        <section id="contact" class="contact">
-            <h2>Contact Us</h2>
-            <p>Have questions or want to get in touch? Reach out to us at:</p>
-            <p>Email: <a href="mailto:contact@socialcyclone.com">contact@socialcyclone.com</a></p>
         </section>
     </main>
 
@@ -107,11 +48,8 @@
         <p>&copy; 2024 Social Cyclone. All rights reserved.</p>
     </footer>
 
-    <!-- Firebase Initialization and Authentication -->
-    <script type="module" src="scripts.js"></script>
-
+    <!-- Google Sign-In button setup -->
     <script>
-        // Google Sign-In button setup
         function renderGoogleSignInButton() {
             gapi.signin2.render('google-signin-button', {
                 'scope': 'profile email',
@@ -124,24 +62,17 @@
             });
         }
 
-        // Function that is called when Google login is successful
         function onGoogleSignIn(googleUser) {
             var profile = googleUser.getBasicProfile();
-            var id_token = googleUser.getAuthResponse().id_token;
-
-            console.log("ID Token: " + id_token);
+            console.log("ID Token: " + googleUser.getAuthResponse().id_token);
             console.log("User Name: " + profile.getName());
             console.log("User Email: " + profile.getEmail());
-
-            // You can send the id_token to your server for authentication
         }
 
-        // Function that is called when Google login fails
         function onGoogleSignInFailure(error) {
             console.error("Google Sign-In failed: ", error);
         }
 
-        // Load the Google Sign-In library when the page is loaded
         window.onload = function () {
             gapi.load('auth2', function() {
                 gapi.auth2.init();
