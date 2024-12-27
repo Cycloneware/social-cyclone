@@ -16,23 +16,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Example of using Firebase Authentication
-// Example function to create user
-async function createAccount(email, password) {
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log('User created:', userCredential.user);
-    } catch (error) {
-        console.error('Error creating user:', error);
-    }
-}
-
 // Example function to sign in user
 async function signIn(email, password) {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         console.log('User signed in:', userCredential.user);
+
+        // Redirect to the profile page upon successful login
+        window.location.href = 'profile.html';  // Change this to the actual URL of the profile page
     } catch (error) {
         console.error('Error signing in:', error);
+        alert("Login failed: " + error.message);
     }
 }
+
+// Handling the form submission
+document.getElementById('login-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    signIn(email, password); // Call the signIn function
+});
