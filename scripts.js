@@ -2,7 +2,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
-// Your Firebase config object
+// Firebase config (ensure it’s correct)
 const firebaseConfig = {
     apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
     authDomain: "social-cyclone.firebaseapp.com",
