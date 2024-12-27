@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Social Cyclone</title>
+
+    <!-- Firebase SDKs (with type="module") -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Social Cyclone</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="profile.html" class="active">Profile</a></li>
+                <li><a href="logout.html">Log Out</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="profile">
+        <h2>Welcome to Your Profile</h2>
+        <div class="profile-info">
+            <p><strong>Username:</strong> <span id="profile-username"></span></p>
+            <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        </div>
+        <button id="logout-btn" class="cta-btn">Log Out</button>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Social Cyclone. All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase Initialization and Profile Logic -->
+    <script type="module" src="profile.js"></script>
+</body>
+</html>
