@@ -27,6 +27,7 @@
                 <li><a href="index.html" id="login-link">Login</a></li>
                 <li><a href="https://discord.gg/G6S2vmnjvt" target="_blank">Join Our Discord</a></li>
                 <li><a href="#" id="logout-btn" style="display:none; color:red;">Logout</a></li>
+                <li><a href="#" id="search-users-btn">Find Users</a></li>
             </ul>
         </nav>
     </header>
@@ -44,6 +45,14 @@
             <div id="feed-posts">
                 <!-- User's posts will be displayed here -->
             </div>
+        </section>
+
+        <!-- Search Users Section -->
+        <section id="search-users" style="display: none;">
+            <h3>Search for Users</h3>
+            <input type="text" id="search-input" placeholder="Enter username..." />
+            <button id="search-btn">Search</button>
+            <div id="search-results"></div>
         </section>
 
         <button id="logout-btn">Logout</button>
@@ -79,6 +88,11 @@
         const signupLink = document.getElementById('signup-link');
         const loginLink = document.getElementById('login-link');
         const feedContainer = document.getElementById('feed-posts');
+        const searchUsersBtn = document.getElementById('search-users-btn');
+        const searchUsersSection = document.getElementById('search-users');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        const searchBtn = document.getElementById('search-btn');
 
         // Listen to auth state changes
         onAuthStateChanged(auth, async (user) => {
@@ -128,6 +142,39 @@
                 signupLink.style.display = 'inline-block';
                 loginLink.style.display = 'inline-block';
                 logoutBtn.style.display = 'none';
+            }
+        });
+
+        // Search Users Feature
+        searchUsersBtn.addEventListener('click', () => {
+            // Toggle search users section visibility
+            searchUsersSection.style.display = 'block';
+        });
+
+        searchBtn.addEventListener('click', async () => {
+            const queryText = searchInput.value.trim();
+            if (!queryText) {
+                searchResults.innerHTML = '<p>Please enter a username to search.</p>';
+                return;
+            }
+
+            const usersRef = collection(db, 'users'); // Assuming users are stored in the 'users' collection
+            const q = query(usersRef, where('username', '>=', queryText), where('username', '<=', queryText + '\uf8ff'));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                searchResults.innerHTML = '<p>No users found.</p>';
+            } else {
+                searchResults.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const user = doc.data();
+                    const userElement = document.createElement('div');
+                    userElement.classList.add('user-result');
+                    userElement.innerHTML = `
+                        <p><strong>${user.username}</strong> - ${user.email}</p>
+                    `;
+                    searchResults.appendChild(userElement);
+                });
             }
         });
     </script>
