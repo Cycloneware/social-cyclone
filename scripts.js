@@ -7,10 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const authSection = document.getElementById('auth-section'); // Section containing login/signup forms
     const loggedInSection = document.getElementById('logged-in-section'); // Section displayed when logged in
 
-    // Firebase authentication setup
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
+    // Firebase configuration
     const firebaseConfig = {
         apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
         authDomain: "social-cyclone.firebaseapp.com",
@@ -20,11 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
         appId: "1:537484262670:web:238408f9740b7576542b5f",
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
 
     // Listen for changes in authentication state
-    onAuthStateChanged(auth, user => {
+    auth.onAuthStateChanged(user => {
         if (user) {
             // User is logged in, hide auth section and show logged-in section
             if (authSection) authSection.style.display = 'none';
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Add logout button functionality
             if (logoutButton) {
                 logoutButton.addEventListener('click', () => {
-                    signOut(auth).then(() => {
+                    auth.signOut().then(() => {
                         // Redirect to the landing page
                         window.location.reload();
                     }).catch((error) => {
