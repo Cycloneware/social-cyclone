@@ -74,7 +74,7 @@
         // Handle the login form submission
         const loginForm = document.getElementById('login-form');
         loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            e.preventDefault();  // Prevent default form submission
             
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
