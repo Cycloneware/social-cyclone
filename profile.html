@@ -18,27 +18,34 @@
         </div>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="profile.html" class="active">Profile</a></li>
-                <li><a href="logout.html">Log Out</a></li>
+                <li><a href="#profile">My Profile</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#" id="logout-btn">Logout</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="profile">
-        <h2>Welcome to Your Profile</h2>
-        <div class="profile-info">
-            <p><strong>Username:</strong> <span id="profile-username"></span></p>
-            <p><strong>Email:</strong> <span id="profile-email"></span></p>
-        </div>
-        <button id="logout-btn" class="cta-btn">Log Out</button>
-    </section>
+    <main>
+        <section id="profile" class="profile">
+            <h2>Your Profile</h2>
+            <p><strong>Current Username:</strong> <span id="current-username">Loading...</span></p>
+            <form id="change-username-form">
+                <div class="form-group">
+                    <label for="new-username">New Username</label>
+                    <input type="text" id="new-username" name="new-username" required>
+                </div>
+                <button type="submit" class="cta-btn">Change Username</button>
+            </form>
+            <p id="error-message" style="color: red; display: none;"></p>
+            <p id="success-message" style="color: green; display: none;">Username updated successfully!</p>
+        </section>
+    </main>
 
     <footer>
         <p>&copy; 2024 Social Cyclone. All rights reserved.</p>
     </footer>
 
-    <!-- Firebase Initialization and Profile Logic -->
-    <script type="module" src="profile.js"></script>
+    <!-- Firebase Initialization and Authentication -->
+    <script type="module" src="scripts.js"></script>
 </body>
 </html>
