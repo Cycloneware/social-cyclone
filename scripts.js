@@ -1,6 +1,20 @@
+// Import Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-const auth = getAuth();
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyATIAdsKrwKein6PXQpyBB7WlUn6nzTlfM",
+    authDomain: "social-cyclone.firebaseapp.com",
+    projectId: "social-cyclone",
+    storageBucket: "social-cyclone.appspot.com",
+    messagingSenderId: "537484262670",
+    appId: "1:537484262670:web:238408f9740b7576542b5f",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 // Get DOM elements
 const logoutButton = document.getElementById('logout-btn');
