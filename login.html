@@ -112,7 +112,7 @@
             signInWithCredential(auth, credential)
                 .then(() => {
                     // Redirect to the profile page after successful Google login
-                    window.location.href = 'profile.html';
+                    window.location.href = 'profile.html'; // Redirecting after success
                 })
                 .catch((error) => {
                     alert("Google Sign-In failed: " + error.message); // Handle errors
